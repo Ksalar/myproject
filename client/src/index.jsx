@@ -14,35 +14,46 @@ class App extends React.Component {
   	super(props)
   	this.state = {
   		userInput: '',
-  		curLat: 40.750576, 
+  		curLat: 40.8555791, 
       curLng: -73.97643719999999,
       curAddress: '',
       info: ''
   	}
-  	this.search = this.search.bind(this);
+  	this.onSearch = this.onSearch.bind(this);
     this.addInfo = this.addInfo.bind(this)
+    this.coffee = this.coffee.bind(this)
   }
 
   addInfo(info) {
-    console.log("add info main page",info, this.state.curAddress)
     axios.post("/info", {
       "curAddress": this.state.curAddress,
       "info": info
     })
   }
 
-  search(data) {
-  	console.log("from main: ",data)
+  coffee() {
+    console.log("clicled in main")
+    axios.post("/query", {
+      "query": "Starbucks",
+      "selector": "info"
+    }).then((data)=> {
+      console.log("here will be result")
+      console.log(data)
+      
+    })
+  }
+
+  onSearch(data) {
   	axios.post("/search", {
   		"userInput": data
-  	}).then((data)=>{
+  	})
+    .then((data)=>{
       this.setState({
         curLat: data.data[0].lat,
         curLng: data.data[0].lng,
         curAddress: data.data[0].address,
         info: data.data[0].info
       })
-      console.log("location: ", data.data)
   	})
   }
 
@@ -50,8 +61,11 @@ class App extends React.Component {
     return (
       <div id="app">
         <h1> Using Google API </h1>
-        <Search google={this.props.google} onSearch={this.search} />
-        <InfoBox onInfo={this.addInfo}/>
+        <Search google={this.props.google} onSearch={this.onSearch} />
+        <InfoBox 
+        onInfo={this.addInfo}
+        coffee={this.coffee}
+        />
         <MapComponent 
         google={this.props.google} 
         lng={this.state.curLng}

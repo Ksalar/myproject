@@ -9,16 +9,20 @@ export default class InfoBox extends React.Component {
       userInput: ''
     }
     this.reload = this.reload.bind(this)
+    this.coffee = this.coffee.bind(this)
   }
 
   reload() {
-  	console.log('sending')
   	this.props.onInfo(this.state.userInput)
+  }
+
+  coffee() {
+    this.props.coffee()
   }
 
   render() {
   	return (
-  		<form>
+  			<div>
 		  <label>
 		    
 		    <input id="Input"
@@ -29,8 +33,9 @@ export default class InfoBox extends React.Component {
 		    onChange={(e)=> this.setState({userInput: e.target.value})}
 		     ></input>
 		  </label>
-		  <input type="submit" value="Submit" onClick={this.reload}></input>
-		</form>
+      <button onClick={this.reload}>ADD something</button>
+		  <button onClick={this.coffee}>COFFEE-SHOPS</button>
+		</div>
   	)
   }
 

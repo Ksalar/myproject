@@ -14,9 +14,7 @@ export default class Search extends React.Component {
 
 
   search() {
-    console.log("From search: ",this.state.userInput)
     this.props.onSearch(this.state.userInput)
-    // this.props.onSearch(this.state.userInput)
   }
 
   render () {

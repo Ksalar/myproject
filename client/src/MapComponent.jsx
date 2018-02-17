@@ -18,21 +18,17 @@ export class MapComponent extends React.Component {
     if (this.props && this.props.google) { 
       const {google} = this.props;
       const maps = google.maps; 
-      const location = {}
-      location['lat'] = this.props.lat;
-      location['lng'] = this.props.lng;
       const mapRef = this.refs.map; 
       const node = ReactDOM.findDOMNode(mapRef); 
       const mapConfig = Object.assign({}, {
-        center: location,
+        center: {lat: this.props.lat, lng: this.props.lng},
         zoom: 14,
         mapTypeId: 'roadmap'
       })
       this.map = new maps.Map(node, mapConfig); 
 
-      console.log("location is here! : ",location)
       const marker = new google.maps.Marker({
-        position: location,
+        position: {lat: this.props.lat, lng: this.props.lng},
         map: this.map
       });
 
@@ -55,7 +51,6 @@ export class MapComponent extends React.Component {
 
     return (
       <div ref="map" style={style} class="map">
-      {console.log(this.props)}
         loading map...
       }
       </div>

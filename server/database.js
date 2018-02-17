@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
-
 var mongoDB = 'mongodb://127.0.0.1/database';
 mongoose.connect(mongoDB);
-
 var db = mongoose.connection;
 
 db.on('error', function() {
@@ -23,11 +21,18 @@ var shopSchema = mongoose.Schema({
 
 let Shop = mongoose.model('Shop', shopSchema);
 
+
+let lookFor = (selector, query, cb) => {
+  console.log("looking for")
+  Shop.find({"info": /Starbucks/}, function(err, data) {
+    cb(data)
+  })
+}
+
 let save = (item, cb) => {
   item = JSON.parse(item);
   Shop.find({"address": item.results[0].formatted_address}, function(err, data) {
     if (data.length !== 0) {
-      console.log("data is exist", data)
       cb(data)
     } else {
       let obj = {
@@ -36,9 +41,7 @@ let save = (item, cb) => {
         lat: item.results[0].geometry.location.lat,
         info: "Sample of data"
       }
-      console.log("-------------------", obj)
       Shop.create(obj, function(err, extra) {
-        console.log("Created new data!")
       })
       cb(data)
     }
@@ -46,13 +49,14 @@ let save = (item, cb) => {
 }
 
 let updateInfo = (address, info) => {
-  // address = JSON.parse(address);
-  // info = JSON.parse(info);
-  console.log("!!!!!!!!!!!!!!!from database: ", address, info)
-  Shop.update(
-    {"address":address},
-    { $push: {"info": info}}
-  )
+  Shop.findOne({"address": address}, function(err, doc) {
+    if (err) {
+    } else {
+      doc.info = info;
+      doc.save(()=>{})
+    }
+  })
+
 }
 
 
@@ -60,6 +64,7 @@ let updateInfo = (address, info) => {
 
 
 
+module.exports.lookFor = lookFor;
 module.exports.save = save;
 module.exports.updateInfo = updateInfo;
 
